@@ -4,11 +4,39 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app"
   },
   "author": "phong",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.1"
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "events": "^3.3.0",
+    "express": "^4.18.2",
+    "express-handlebars": "^7.1.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.1.0",
+    "express-validation": "^4.1.0",
+    "fs": "^0.0.1-security",
+    "helmet": "^7.0.0",
+    "http-status": "^1.7.0",
+    "jest": "^29.7.0",
+    "jsonwebtoken": "^9.0.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "mongoose": "^7.3.0",
+    "nodemon": "^2.0.22",
+    "path": "^0.12.7",
+    "redis": "^4.6.13",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "uuid": "^9.0.1",
+    "validator": "^13.9.0",
+    "xss-clean": "^0.1.4",
+    "yamljs": "^0.3.0"
   }
 }
