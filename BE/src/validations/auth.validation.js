@@ -24,10 +24,3 @@ exports.register = {
     age: Joi.number().min(6).max(20),
   }),
 };
-
-exports.addTodo = {
-  body: Joi.object().keys({
-    title: Joi.string().min(3).email().required(),
-    description: Joi.string().min(6).required(),
-  }),
-};

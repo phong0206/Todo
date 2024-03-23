@@ -10,11 +10,13 @@ const _ = require("lodash");
 
 const register = async (req, res) => {
     const data = { ...req.body };
+    console.log(123,data)
     const encryptPass = hashData(data.password);
     const registerUser = {
         name: data.name,
         email: data.email,
         password: encryptPass,
+        age: data.age
     };
     try {
         const user = await userService.findOneByEmail(data.email)

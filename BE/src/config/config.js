@@ -8,9 +8,7 @@ module.exports = {
     PORT: parseInt(process.env.PORT, 10) || 8080,
     SECRET_KEY: process.env.SECRET_KEY,
     ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
-    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
-    NODEMAILER_EMAIL: process.env.NODEMAILER_EMAIL,
-    NODEMAILER_PASS: process.env.NODEMAILER_PASS,
     APP_URL: process.env.APP_URL,
     VERIFY_TOKEN_SECRET: process.env.VERIFY_TOKEN_SECRET,
+    JWT_ACCESS_EXPIRATION_SECONDS: process.env.JWT_ACCESS_EXPIRATION_SECONDS,
 };

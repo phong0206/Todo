@@ -1,10 +1,10 @@
 const { todoService } = require("../services");
 const apiResponse = require("../dtos/apiResponse");
-const { get } = require("../routes/user.route");
 
 const addTodo = async (req, res) => {
     const data = { ...req.body };
     const userId = req.id;
+    console.log(userId)
 
     try {
         const newTodo = await todoService.create({ userId: userId, ...data, status: "pending" });
@@ -17,9 +17,16 @@ const addTodo = async (req, res) => {
 };
 
 const getAllTodos = async (req, res) => {
+    const userId = req.id;
+    const status = req.body.status;
+    console.log(status)
     try {
-        const allTodos = await todoService.getAllTodos()
-
+        let allTodos
+        if ((status == "pending") || (status == "completed")) {
+            allTodos = await todoService.getAllTodosWithFilter(userId, status);
+        } else {
+            allTodos = await todoService.getAllTodos(userId);
+        }
         return apiResponse.successResponseWithData(res, 'Get All Todo successfully', allTodos);
     } catch (err) {
         console.error(err);
@@ -34,6 +41,7 @@ const updateTodo = async (req, res) => {
 
         const todo = await todoService.findOneById(todoId)
         if (!todo) return apiResponse.notFoundResponse(res, "Todo not found");
+        if (todo.status === "completed") return apiResponse.ErrorResponse(res, "Todo completed can not edit")
         const newTodo = await todoService.updateById(todoId, data);
         return apiResponse.successResponseWithData(res, 'Update Todo successfully', newTodo);
     } catch (err) {
@@ -48,9 +56,8 @@ const deleteTodo = async (req, res) => {
     try {
         const todo = await todoService.findOneById(todoId)
         if (!todo) return apiResponse.notFoundResponse(res, "Todo not found");
-        await todoService.deleteById(userId);
-
-        return apiResponse.successResponse(res, 'Add Todo successfully');
+        await todoService.deleteById(todoId);
+        return apiResponse.successResponse(res, 'Delete Todo successfully');
     } catch (err) {
         console.error(err);
         return apiResponse.ErrorResponse(res, err.message);
@@ -59,16 +66,15 @@ const deleteTodo = async (req, res) => {
 
 const markTodo = async (req, res) => {
     const { todoId } = req.params;
-    const { status } = req.body;
     try {
         const todo = await todoService.findOneById(todoId)
         if (!todo) return apiResponse.notFoundResponse(res, "Todo not found");
-        if (status === 'pending') {
-            const newTodo = await todoService.updateById(todoId, { status: "completed" });
-        } else if (status === 'completed') {
-            const newTodo = await todoService.updateById(todoId, { status: "pending" });
+        if (todo.status === 'pending') {
+            await todoService.updateById(todoId, { status: "completed" });
+        } else if (todo.status === 'completed') {
+            await todoService.updateById(todoId, { status: "pending" });
         }
-        return apiResponse.successResponseWithData(res, 'Mark Todo successfully', newTodo);
+        return apiResponse.successResponse(res, 'Mark Todo successfully');
     } catch (err) {
         console.error(err);
         return apiResponse.ErrorResponse(res, err.message);

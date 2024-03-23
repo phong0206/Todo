@@ -5,13 +5,11 @@ const Todo = mongoose.Schema(
     {
         title: {
             type: String,
-            minlength: [6, "Password must be at least 6 characters long"],
             required: [true, "Please provide password"],
             default: "admin123",
         },
         description: {
             type: String,
-            minlength: [3, "Name must be at least 3 characters long"],
             required: [true, "Please provide name"],
             name: "admin",
         },

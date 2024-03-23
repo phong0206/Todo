@@ -11,8 +11,8 @@ const ProtectedRoute: React.FC = ({ children }: any) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user?.verified) {
-      navigate('/admin/login');
+    if (!user) {
+      navigate('/login');
     }
   }, [user, navigate]);
 

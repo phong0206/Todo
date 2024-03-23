@@ -1,5 +1,4 @@
 'use strict';
-
 const express = require("express");
 const routes = require("./routes");
 const cookieParser = require("cookie-parser");
@@ -7,9 +6,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const xss = require("xss-clean");
 const mongoSanitize = require("express-mongo-sanitize");
-const path = require('path');
 const config = require("./config/config");
-
 const { limiter } = require('./middlewares/rate.limiter.middleware')
 
 const swaggerUi = require("swagger-ui-express");
@@ -26,7 +23,6 @@ const startServer = () => {
     redisClient.connect().then(() => {
         console.log('Redis connected!');
     });
-
     const corsOptions = {
         origin: ['http://localhost:5173', 'http://localhost:5174'],
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -34,7 +30,6 @@ const startServer = () => {
         credentials: true,
         optionSuccessStatus: 200,
     };
-
     //set security HTTP headers
     app.use(helmet());
 
@@ -48,20 +43,12 @@ const startServer = () => {
     app.use(xss());
     app.use(mongoSanitize());
 
-    app.use((req, res, next) => {
-        res.header('Cross-Origin-Resource-Policy', '');
-        next();
-    });
-
-    app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-
     //limit req
     app.use(limiter)
 
     app.use("/", routes);
 
     app.use("/docs", swaggerUi.serve, swaggerUi.setup(specs));
-
 
     app.listen(config.PORT, () => {
         console.log("listening on port 3000");
@@ -71,7 +58,5 @@ const startServer = () => {
         console.error(err.stack);
         res.status(500).send('Có lỗi xảy ra!');
     });
-
-
 }
 startServer()

@@ -12,8 +12,8 @@ const GuestRoute: React.FC = ({ children }: any) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user?.verified) {
-      navigate('/admin/post');
+    if (user) {
+      navigate('/home');
     }
   }, [user, navigate]);
 

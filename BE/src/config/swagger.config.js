@@ -32,6 +32,6 @@ const options = {
             bearerAuth: []
         }]
     },
-    apis: ["./src/swagger/user.swagger.js", "./src/swagger/blog.swagger.js"],
+    apis: ["./src/swagger/user.swagger.js", "./src/swagger/todo.swagger.js"],
 };
 exports.specs = swaggerJsdoc(options);

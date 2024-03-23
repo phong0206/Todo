@@ -1,24 +1,29 @@
 import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+import {
+  Avatar,
+  Button,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Link,
+  Grid,
+  Box,
+  Typography,
+} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
-import { useNavigate } from 'react-router-dom';
 import { makeStyles, createStyles } from '@mui/styles';
-import * as api from '../apis/api';
 import { useSnackbar } from 'notistack';
-import '../App.css';
-import { AuthContext } from '../context/AuthProvider';
+import * as api from '../apis/api';
 
-function Copyright(props: any) {
+interface Props {
+  email?: string;
+  password?: string;
+  name?: string;
+}
+function Copyright(props: any): JSX.Element {
   return (
     <Typography
       variant="body2"
@@ -38,63 +43,75 @@ function Copyright(props: any) {
 const useStyles = makeStyles((theme: any) =>
   createStyles({
     box: {
-      fontFamily: 'Times New Roman',
-      marginTop: '7%',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      padding: '30px',
-      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
+      justifyContent: 'center',
       borderRadius: '10px',
       width: '45%',
+      height: '85%',
       marginInline: 'auto',
+      marginTop: '6rem',
+      padding: '30px',
+      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
       [theme.breakpoints.down('lg')]: {
-        // 1280px
-        width: '65%',
-        marginTop: 250,
+        width: '70%',
+        marginTop: '15rem',
+        height: '80%',
       },
       [theme.breakpoints.down('md')]: {
-        // 960px
         width: '65%',
-        marginTop: 240,
+        marginTop: '8rem',
+        height: '65%',
       },
       [theme.breakpoints.down('sm')]: {
-        // 600px
-        width: '85%',
-        marginTop: 150,
+        width: '90%',
+        marginTop: '6rem',
+        height: '85%',
       },
     },
-    avatar: {
-      margin: '10px',
-      backgroundColor: 'navy',
-      width: '55px',
-      height: 'auto',
+    textField: {
+      marginTop: '5px',
+      width: '100%',
+      '& input': {
+        fontSize: '13px',
+      },
     },
-    boxChild: {
-      marginTop: '10px',
+    date: {
+      marginTop: '-8px',
+    },
+    formControl: {
+      width: '100%',
     },
     button: {
-      marginTop: '20px',
-      marginBottom: '5%',
+      marginTop: '3%',
+      marginBottom: '3%',
+    },
+    copyRight: {
+      marginTop: '10px',
+    },
+    avatar: {
+      margin: 0,
+      backgroundColor: 'navy',
+    },
+    boxChild: {
+      marginTop: '16px',
     },
     link: {
       fontSize: '16px',
     },
-    copyRight: {
-      marginBottom: '3%',
-      marginTop: '5%',
-    },
   })
 );
-export default function Login() {
-  const navigate = useNavigate();
+
+function Register() {
   const classes = useStyles();
-  const { updateToken } = React.useContext(AuthContext);
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const formik = useFormik({
     initialValues: {
       email: '',
       password: '',
+      name: '',
     },
     validationSchema: yup.object().shape({
       email: yup.string().required('Email is required').email('Email invalid'),
@@ -102,14 +119,23 @@ export default function Login() {
         .string()
         .min(6, 'Password must be at least 6 characters')
         .required('Password is required'),
+      phoneNumber: yup
+        .string()
+        .matches(/(\+84|0)[0-9]{9,10}/, 'Invalid phone number'),
+      // .required('Confirm password is required'),
+      name: yup
+        .string()
+        .min(3, 'Username must be at least 3 characters')
+        .max(20, 'Username must be under 20 character')
+        .required('Username is required'),
     }),
-    onSubmit: async (values: any) => {
-      const res = await api.login({
+    onSubmit: async (values: Props) => {
+      const res = await api.register({
         email: values.email,
         password: values.password,
+        name: values.name,
       });
-      console.log(123,res)
-      if (res.data?.accessToken) {
+      if (res.status === 200) {
         enqueueSnackbar(res.message, {
           variant: 'success',
           anchorOrigin: {
@@ -117,8 +143,7 @@ export default function Login() {
             horizontal: 'right',
           },
         });
-        await updateToken(res.data.accessToken);
-        navigate('/home');
+        navigate('/login');
       } else {
         enqueueSnackbar(res.message, {
           variant: 'error',
@@ -136,18 +161,40 @@ export default function Login() {
       <Avatar className={classes.avatar}>
         <LockOutlinedIcon />
       </Avatar>
-      <Typography component="h1" variant="h5">
-        Sign In
+      <Typography component="h1" variant="h5" fontWeight="bold">
+        Sign up
       </Typography>
       <Box
-        component="form"
-        onSubmit={formik.handleSubmit}
-        noValidate
         className={classes.boxChild}
+        component="form"
+        noValidate
+        onSubmit={formik.handleSubmit}
       >
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
+              autoComplete="given-name"
+              name="name"
+              required
+              fullWidth
+              id="name"
+              inputProps={{
+                onFocus: () => false,
+              }}
+              className={classes.textField}
+              label="Name"
+              value={formik.values.name}
+              onChange={formik.handleChange('name')}
+              onBlur={formik.handleBlur('name')}
+              error={formik.touched.name && Boolean(formik.errors.name)}
+              helperText={formik.touched.name && Boolean(formik.errors.name)}
+            />
+          </Grid>
+        
+
+          <Grid item xs={12}>
+            <TextField
+              className={classes.textField}
               required
               fullWidth
               id="email"
@@ -163,6 +210,7 @@ export default function Login() {
           </Grid>
           <Grid item xs={12}>
             <TextField
+              className={classes.textField}
               required
               fullWidth
               name="password"
@@ -179,23 +227,25 @@ export default function Login() {
               }
             />
           </Grid>
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={<Checkbox value="allowExtraEmails" color="primary" />}
+              label="I accept the Terms of Use and Privacy Policy."
+            />
+          </Grid>
         </Grid>
-        <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Remember me"
-        />
         <Button
           type="submit"
           fullWidth
           variant="contained"
           className={classes.button}
         >
-          Sign In
+          Sign Up
         </Button>
-        <Grid container direction="column">
+        <Grid container justifyContent="flex-end">
           <Grid item>
-            <Link className={classes.link} href="register" variant="body2">
-              Don't have an account? Sign Up
+            <Link className={classes.link} href="login" variant="body2">
+              Already have an account? Sign in
             </Link>
           </Grid>
         </Grid>
@@ -204,3 +254,5 @@ export default function Login() {
     </Box>
   );
 }
+
+export default Register;
