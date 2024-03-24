@@ -58,9 +58,9 @@ const Header = () => {
         style={{ padding: 0, marginRight: '15px', color: 'white' }}
       >
         <Avatar sx={{ bgcolor: deepOrange[500] }}>
-          {user.name ? getInitials(user.name) : '?'}
+          {user && user.name ? getInitials(user.name) : '?'}
         </Avatar>
-        &nbsp;{user.name}
+        &nbsp;{user ? user.name : ''}
       </IconButton>
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
         <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
