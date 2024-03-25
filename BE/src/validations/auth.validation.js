@@ -7,13 +7,6 @@ const SORT_BY_USER = [
   "createdAt:desc",
   "createdAt:asc",
 ];
-const SORT_BY_BLOG = ["createdAt:desc", "createdAt:asc"];
-exports.login = {
-  body: Joi.object().keys({
-    email: Joi.string().min(3).email().required(),
-    password: Joi.string().min(6).required(),
-  }),
-};
 
 exports.register = {
   body: Joi.object().keys({
